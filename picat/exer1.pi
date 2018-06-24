@@ -1,0 +1,292 @@
+%% CPU time 0.121 seconds.
+
+%%	Cliente 1:
+%%	verde denise sapatilha 35 23 contadora
+%%	Cliente 2:
+%%	branco rebeca bota 34 25 nutricionista
+%%	Cliente 3:
+%%	azul claudia tenis 37 20 enfermeira
+%%	Cliente 4:
+%%	vermelho jennifer salto 38 31 advogada
+%%	Cliente 5:
+%%	amarelo ligia sandalia 36 28 psiquiatra
+
+
+
+index(-)
+	cor(amarelo).
+	cor(azul).
+	cor(branco).
+	cor(verde).
+	cor(vermelho).
+	
+index(-)
+	nome(claudia).
+	nome(denise).
+	nome(jennifer).
+	nome(ligia).
+	nome(rebeca).
+	
+index(-)
+	calcado(bota).
+	calcado(salto).
+	calcado(sandalia).
+	calcado(sapatilha).
+	calcado(tenis).
+	
+index(-)
+	numero(34).
+	numero(35).
+	numero(36).
+	numero(37).
+	numero(38).
+	
+index(-)
+	idade(20).
+	idade(23).
+	idade(25).
+	idade(28).
+	idade(31).
+	
+index(-)
+	profissao(advogada).
+	profissao(contadora).
+	profissao(enfermeira).
+	profissao(nutricionista).
+	profissao(psiquiatra).
+	
+sapatos((COR1,NOME1,CAL1,NUM1,IDADE1,PRO1),
+		(COR2,NOME2,CAL2,NUM2,IDADE2,PRO2),
+		(COR3,NOME3,CAL3,NUM3,IDADE3,PRO3),
+		(COR4,NOME4,CAL4,NUM4,IDADE4,PRO4),
+		(COR5,NOME5,CAL5,NUM5,IDADE5,PRO5)) ?=>
+		
+cor(COR1),cor(COR2),cor(COR3),cor(COR4),cor(COR5),
+all_different([COR1,COR2,COR3,COR4,COR5]),
+
+% Na quarta posição está quem escolheu um calçado Vermelho.
+
+COR4==vermelho,
+
+% A cliente que escolheu um calçado Branco está exatamente à esquerda de quem escolheu um calçado Azul.
+
+(
+(COR2==azul,COR1==branco);
+(COR3==azul,COR2==branco)
+%(COR4==azul,COR3==branco); Impossivel ser, pois COR4 ja é vermelha.
+%(COR5==azul,COR4==branco) Impossivel ser, pois COR4 ja é vermelha.
+),
+
+nome(NOME1),nome(NOME2),nome(NOME3),nome(NOME4),nome(NOME5),
+all_different([NOME1,NOME2,NOME3,NOME4,NOME5]),
+
+% Denise está na primeira posição.
+
+NOME1==denise,
+
+% Rebeca escolheu um calçado Branco.
+
+(
+(NOME1==rebeca, COR1==branco);
+(NOME2==rebeca, COR2==branco);
+(NOME3==rebeca, COR3==branco);
+(NOME4==rebeca, COR4==branco);
+(NOME5==rebeca, COR5==branco)
+),
+
+% Jennifer está em algum lugar à direita de quem escolheu um calçado Azul.
+
+(
+(COR1==azul,(NOME2==jennifer ; NOME3==jennifer ; NOME4==jennifer ; NOME5==jenifer));
+(COR2==azul,(NOME3==jennifer ; NOME4==jennifer ; NOME5==jenifer));
+(COR3==azul,(NOME4==jennifer ; NOME5==jenifer));
+(COR4==azul,NOME5==jennifer)
+),
+
+
+calcado(CAL1),calcado(CAL2),calcado(CAL3),calcado(CAL4),calcado(CAL5),
+all_different([CAL1,CAL2,CAL3,CAL4,CAL5]),
+
+% Na quarta posição está a mulher que escolheu o Salto.
+
+CAL4==salto,
+
+% Cláudia escolheu um Tênis.
+
+(
+%(NOME1==claudia, CAL1==tenis); Impossivel pois denise está na posicao 1.
+(NOME2==claudia, CAL2==tenis);
+(NOME3==claudia, CAL3==tenis);
+(NOME4==claudia, CAL4==tenis);
+(NOME5==claudia, CAL5==tenis)
+),
+
+% Quem escolheu um calçado Azul está em algum lugar à esquerda de quem escolheu uma Sandália.
+
+(
+(CAL2==sandalia,COR1==azul);
+(CAL3==sandalia,(COR1==azul ; COR2==azul));
+(CAL4==sandalia,(COR1==azul ; COR2==azul ; COR3==azul));
+(CAL5==sandalia,(COR1==azul ; COR2==azul ; COR3==azul ; COR4==azul))
+),
+
+
+numero(NUM1),numero(NUM2),numero(NUM3),numero(NUM4),numero(NUM5),
+all_different([NUM1,NUM2,NUM3,NUM4,NUM5]),
+
+% As mulheres que calçam 34 e 35 estão lado a lado
+
+(
+(NUM1==34, NUM2==35);
+(NUM1==35, NUM2==34);
+(NUM2==35, NUM3==34);
+(NUM2==34, NUM3==35);
+(NUM3==35, NUM4==34);
+(NUM3==34, NUM4==35);
+(NUM4==35, NUM5==34);
+(NUM4==34, NUM5==35)
+),
+
+
+idade(IDADE1),idade(IDADE2),idade(IDADE3),idade(IDADE4),idade(IDADE5),
+all_different([IDADE1,IDADE2,IDADE3,IDADE4,IDADE5]),
+
+% ALGUMA COISA POR AQUI 
+
+
+% Em uma das pontas está a mulher de 28 anos.
+
+(
+(IDADE1==28);
+(IDADE5==28)
+),
+
+% A cliente mais nova está na terceira posiçao
+
+IDADE3==20,
+
+
+% A cliente de 31 anos calça 38
+
+(
+(IDADE1==31,NUM1==38);
+(IDADE2==31,NUM2==38);
+(IDADE3==31,NUM3==38);
+(IDADE4==31,NUM4==38);
+(IDADE5==31,NUM5==38)
+),
+
+% A mulher mais velha está exatamente à direita de quem calça 37.
+
+(
+(NUM1==37,IDADE2==31);
+%(NUM2==37,IDADE3==31); Impossivel pois a mais nova está na pos. 3
+(NUM3==37,IDADE4==31);
+(NUM4==37,IDADE5==31)
+),
+
+% A cliente de 23 anos está ao lado da mulher que escolheu uma Bota.
+
+
+(
+(CAL1==bota,IDADE2==23);
+(CAL2==bota,IDADE3==23);
+(CAL2==bota,IDADE1==23);
+(CAL3==bota,IDADE4==23);
+(CAL3==bota,IDADE2==23);
+(CAL4==bota,IDADE5==23);
+(CAL4==bota,IDADE3==23);
+(CAL5==bota,IDADE4==23)
+),
+
+
+% A cliente de 31 anos está exatamente à esquerda de quem escolheu um calçado Amarelo.
+
+(
+(COR2==amarelo,IDADE1==31);
+(COR3==amarelo,IDADE2==31);
+(COR4==amarelo,IDADE3==31);
+(COR5==amarelo,IDADE4==31)
+),
+
+% A mulher de 25 anos está em algum lugar entre a mulher que calça 35 e quem escolheu um Tênis, nessa ordem.
+
+(
+(NUM1==35,CAL3==tenis,IDADE2==25);
+(NUM1==35,CAL4==tenis,(IDADE2==25 ; IDADE3==25));
+(NUM1==35,CAL5==tenis,(IDADE2==25 ; IDADE3==25 ; IDADE4==25));
+(NUM2==35,CAL4==tenis,IDADE3==25);
+(NUM2==35,CAL5==tenis,(IDADE3==25 ; IDADE4==25));
+(NUM3==35,CAL5==tenis,IDADE4==25)
+),
+
+% Jennifer está em algum lugar entre a cliente de 23 anos e a Lígia, nessa ordem.
+
+(
+(IDADE1==23,NOME3==ligia,NOME2==jennifer);
+(IDADE1==23,NOME4==ligia,(NOME2==jennifer ; NOME3==jennifer));
+(IDADE1==23,NOME5==ligia,(NOME2==jennifer ; NOME3==jennifer ; NOME4==jennifer));
+(IDADE2==23,NOME4==ligia,NOME3==jennifer);
+(IDADE2==23,NOME5==ligia,(NOME3==jennifer ; NOME4==jennifer));
+(IDADE3==23,NOME5==ligia,NOME4==jennifer)
+),
+
+profissao(PRO1),profissao(PRO2),profissao(PRO3),profissao(PRO4),profissao(PRO5),
+all_different([PRO1,PRO2,PRO3,PRO4,PRO5]),
+
+% A Advogada está exatamente a esquerda da mulher de 28 anos.
+
+(
+(IDADE2==28,PRO1==advogada);
+(IDADE3==28,PRO2==advogada);
+(IDADE4==28,PRO3==advogada);
+(IDADE5==28,PRO4==advogada)
+),
+
+% A Nutricionista está em algum lugar entre a cliente que calça 35 e a Enfermeira, nessa ordem.
+
+(
+(NUM1==35,PRO3==enfermeira,PRO2==nutricionista);
+(NUM1==35,PRO4==enfermeira,(PRO2==nutricionista ; PRO3==nutricionista));
+(NUM1==35,PRO5==enfermeira,(PRO2==nutricionista ; PRO3==nutricionista ; PRO4==nutricionista));
+(NUM2==35,PRO4==enfermeira,PRO3==nutricionista);
+(NUM2==35,PRO5==enfermeira,(PRO3==nutricionista ; PRO4==nutricionista));
+(NUM3==35,PRO5==enfermeira,PRO4==nutricionista)
+),
+
+% A Enfermeira está em algum lugar entre quem escolheu a Sapatilha e a Psiquiatra, nessa ordem.
+
+(
+(CAL1==sapatilha,PRO3==psiquiatra,PRO2==enfermeira);
+(CAL1==sapatilha,PRO4==psiquiatra,(PRO2==enfermeira ; PRO3==enfermeira));
+(CAL1==sapatilha,PRO5==psiquiatra,(PRO2==enfermeira ; PRO3==enfermeira ; PRO4==enfermeira));
+(CAL2==sapatilha,PRO4==psiquiatra,PRO3==enfermeira);
+(CAL2==sapatilha,PRO5==psiquiatra,(PRO2==enfermeira ; PRO3==enfermeira));
+(CAL3==sapatilha,PRO5==psiquiatra)
+).
+
+
+main() ?=> time(
+        sapatos((COR1,NOME1,CAL1,NUM1,IDADE1,PRO1),
+				(COR2,NOME2,CAL2,NUM2,IDADE2,PRO2),
+				(COR3,NOME3,CAL3,NUM3,IDADE3,PRO3),
+				(COR4,NOME4,CAL4,NUM4,IDADE4,PRO4),
+				(COR5,NOME5,CAL5,NUM5,IDADE5,PRO5))
+		),
+
+        printf("Cliente 1:\n"),
+        printf("%w %w %w %w %w %w\n",COR1,NOME1,CAL1,NUM1,IDADE1,PRO1),
+        printf("Cliente 2:\n"),
+        printf("%w %w %w %w %w %w\n",COR2,NOME2,CAL2,NUM2,IDADE2,PRO2),
+        printf("Cliente 3:\n"),
+        printf("%w %w %w %w %w %w\n",COR3,NOME3,CAL3,NUM3,IDADE3,PRO3),
+        printf("Cliente 4:\n"),
+        printf("%w %w %w %w %w %w\n",COR4,NOME4,CAL4,NUM4,IDADE4,PRO4),
+        printf("Cliente 5:\n"),
+        printf("%w %w %w %w %w %w\n",COR5,NOME5,CAL5,NUM5,IDADE5,PRO5).
+        
+
+all_different([]) ?=> true.
+	all_different([H|T]) => not(member(H,T)),
+						   all_different(T).
+

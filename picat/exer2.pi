@@ -1,0 +1,322 @@
+%% CPU time 12.055 seconds.
+%% 
+%% Caminhão 1:
+%% verde bino mato_grosso enxofre aaa_1111 150
+%% Caminhão 2:
+%% vermelho pedro parana trigo bbb_2222 100
+%% Caminhão 3:
+%% amarelo jorge bahia soda_caustica ddd_4444 250
+%% Caminhão 4:
+%% azul stenio minas_gerais adubo ccc_3333 200
+%% Caminhão 5:
+%% branco antonio amazonas carvao eee_5555 50
+
+
+index(-)
+	cor(amarelo).
+	cor(azul).
+	cor(branco).
+	cor(verde).
+	cor(vermelho).
+
+index(-)
+	motorista(antonio).
+	motorista(bino).
+	motorista(jorge).
+	motorista(pedro).
+	motorista(stenio).
+	
+index(-)
+	destino(amazonas).
+	destino(bahia).
+	destino(mato_grosso).
+	destino(minas_gerais).
+	destino(parana).
+
+index(-)
+	carga(adubo).
+	carga(carvao).
+	carga(enxofre).
+	carga(soda_caustica).
+	carga(trigo).
+
+index(-)
+	placa(aaa_1111).
+	placa(bbb_2222).
+	placa(ccc_3333).
+	placa(ddd_4444).
+	placa(eee_5555).
+
+index(-)
+	km(50).
+	km(100).
+	km(150).
+	km(200).
+	km(250).
+
+caminhos((C1,M1,D1,CA1,P1,KM1),
+		 (C2,M2,D2,CA2,P2,KM2),
+		 (C3,M3,D3,CA3,P3,KM3),
+		 (C4,M4,D4,CA4,P4,KM4),
+		 (C5,M5,D5,CA5,P5,KM5)) ?=>
+		 
+cor(C1),cor(C2),cor(C3),cor(C4),cor(C5),
+all_different([C1,C2,C3,C4,C5]),
+
+% O caminhão Azul está em algum lugar à esquerda do caminhão Branco
+
+(
+(C2==branco,C1==azul);
+(C3==branco,(C1==azul ; C2==azul));
+(C4==branco,(C1==azul ; C2==azul ; C3==azul));
+(C5==branco,(C1==azul ; C2==azul ; C3==azul ; C4==azul))
+),
+
+% O caminhão Branco está em algum lugar à direita do caminhão Verde.
+
+(
+(C1==verde;(C2==branco ; C3==branco ; C4==branco ; C5==branco));
+(C2==verde;(C3==branco ; C4==branco ; C5==branco));
+(C3==verde;(C4==branco ; C5==branco));
+(C4==verde;C5==branco)
+),
+
+motorista(M1),motorista(M2),motorista(M3),motorista(M4),motorista(M5),
+all_different([M1,M2,M3,M4,M5]),
+
+
+
+destino(D1),destino(D2),destino(D3),destino(D4),destino(D5),
+all_different([D1,D2,D3,D4,D5]),
+
+% Na quarta posição está o caminhão que vai para Belo Horizonte.
+
+D4==minas_gerais,
+
+% Stenio está dirigindo para Minas gerais
+
+(
+(M1==stenio,D1==minas_gerais);
+(M2==stenio,D2==minas_gerais);
+(M3==stenio,D3==minas_gerais);
+(M4==stenio,D4==minas_gerais);
+(M5==stenio,D5==minas_gerais)
+),
+
+% O caminhão Vermelho está em algum lugar à esquerda do caminhão que vai para o Amazonas.
+
+(
+(D2==amazonas,C1==vermelho);
+(D3==amazonas,(C1==vermelho ; C2==vermelho));
+(D4==amazonas,(C1==vermelho ; C2==vermelho ; C3==vermelho));
+(D5==amazonas,(C1==vermelho ; C2==vermelho ; C3==vermelho ; C4==vermelho))
+),
+
+% Quem vai para a região Nordeste está em algum lugar à direita do caminhão Vermelho.
+
+(
+(C1==vermelho,(D2==bahia ; D3==bahia ; D4==bahia ; D5==bahia));
+(C2==vermelho,(D3==bahia ; D4==bahia ; D5==bahia));
+(C3==vermelho,(D4==bahia ; D5==bahia));
+(C4==vermelho,D5==bahia)
+),
+
+
+
+%Pedro está ao lado do caminhão que vai para o Mato Grosso.
+
+(
+(D1==mato_grosso,M2==pedro);
+(D2==mato_grosso,M3==pedro);
+(D2==mato_grosso,M1==pedro);
+(D3==mato_grosso,M4==pedro);
+(D3==mato_grosso,M2==pedro);
+(D4==mato_grosso,M5==pedro);
+(D4==mato_grosso,M3==pedro);
+(D5==mato_grosso,M4==pedro)
+),
+
+carga(CA1),carga(CA2),carga(CA3),carga(CA4),carga(CA5),
+all_different([CA1,CA2,CA3,CA4,CA5]),
+
+
+% O caminhão com Adubo está em algum lugar entre o caminhão que vai para Bahia e o caminhão com Carvão, nessa ordem. *
+
+(
+(D1==bahia,CA3==carvao,CA2==adubo);
+(D1==bahia,CA4==carvao,(CA2==adubo ; CA3==adubo));
+(D1==bahia,CA5==carvao,(CA2==adubo ; CA3==adubo ; CA4==adubo));
+(D2==bahia,CA4==carvao,CA3==adubo);
+(D2==bahia,CA5==carvao, (CA3==adubo ;CA4==adubo));
+(D3==bahia,CA5==carvao,CA4==adubo)
+),
+
+% O caminhão Vermelho está em algum lugar entre o caminhão que está carregando Enxofre e o caminhão Azul, nessa ordem.
+
+(
+(CA1==enxofre,C3==azul,C2==vermelho);
+(CA1==enxofre,C4==azul,(C2==vermelho ; C3==vermelho));
+(CA1==enxofre,C5==azul,(C2==vermelho ; C3==vermelho ; C4==vermelho));
+(CA2==enxofre,C4==azul, C3==vermelho);
+(CA2==enxofre,C5==azul, (C3==vermelho ; C4==vermelho));
+(CA3==enxofre,C5==azul, C4==vermelho)
+),
+
+
+
+placa(P1),placa(P2),placa(P3),placa(P4),placa(P5),
+all_different([P1,P2,P3,P4,P5]),
+
+% Antônio é o motorista do caminhão de placa EEE-5555.
+
+(
+(M1==antonio,P1==eee_5555);
+(M2==antonio,P2==eee_5555);
+(M3==antonio,P3==eee_5555);
+(M4==antonio,P4==eee_5555);
+(M5==antonio,P5==eee_5555)	
+),
+
+% Em uma das pontas está o caminhão de placa EEE-5555.
+
+(
+(P1==eee_5555);
+(P5==eee_5555)
+),
+
+% Jorge é o motorista do caminhão de placa DDD-4444.
+
+(
+(M1==jorge,P1==ddd_4444);
+(M2==jorge,P2==ddd_4444);
+(M3==jorge,P3==ddd_4444);
+(M4==jorge,P4==ddd_4444);
+(M5==jorge,P5==ddd_4444)
+),
+
+% Em uma das pontas está o caminhão de placa AAA-1111.
+
+(
+(P1==aaa_1111);
+(P5==aaa_1111)
+),
+
+% O caminhão de placa DDD-4444 está transportando Soda cáustica.
+
+(
+(P1==ddd_4444,CA1==soda_caustica);
+(P2==ddd_4444,CA2==soda_caustica);
+(P3==ddd_4444,CA3==soda_caustica);
+(P4==ddd_4444,CA4==soda_caustica);
+(P5==ddd_4444,CA5==soda_caustica)	
+),
+
+% O veículo Azul está em algum lugar à direita do veículo de placa AAA-1111
+
+(
+(P1==aaa_1111,(C2==azul ; C3==azul ; C4==azul ; C5==azul));	
+(P2==aaa_1111,(C3==azul ; C4==azul ; C5==azul));
+(P3==aaa_1111,(C4==azul ; C5==azul));
+(P4==aaa_1111,C5==azul)
+),
+
+
+% O veículo de placa CCC-3333 está exatamente à direita do veículo de placa DDD-4444.
+
+(
+(P1==ddd_4444,P2==ccc_3333);
+(P2==ddd_4444,P3==ccc_3333);
+(P3==ddd_4444,P4==ccc_3333);
+(P4==ddd_4444,P5==ccc_3333)
+),
+
+
+km(KM1),km(KM2),km(KM3),km(KM3),km(KM4),km(KM5),
+all_different([KM1,KM2,KM3,KM4,KM5]),
+
+% Na primeira posição está o caminhão que tem 150 mil Km rodados.
+
+KM1==150,
+
+% O caminhão menos rodado está transportando Carvão.
+	
+(
+%(KM1==50,CA1==carvao); Impossivel pois o KM1 está com 150mil 
+(KM2==50,CA2==carvao);
+(KM3==50,CA3==carvao);	
+(KM4==50,CA4==carvao);
+(KM5==50,CA5==carvao)
+),
+
+% O veículo de placa BBB-2222 está ao lado do veículo mais rodado.
+(
+(KM1==250,P2==bbb_2222);
+(KM2==250,P3==bbb_2222);
+(KM2==250,P1==bbb_2222);
+(KM3==250,P4==bbb_2222);
+(KM3==250,P2==bbb_2222);
+(KM4==250,P5==bbb_2222);
+(KM4==250,P3==bbb_2222);
+(KM5==250,P4==bbb_2222)
+),
+
+% O caminhão Amarelo está exatamente à esquerda do caminhão que tem 200 mil Km rodados.
+
+(
+(KM2==200,C1==amarelo);
+(KM3==200,C2==amarelo);
+(KM4==200,C3==amarelo);
+(KM5==200,C4==amarelo)
+),
+
+% O veículo que vai para a região Centro-oeste está ao lado do caminhão que já rodou 100 mil Km.
+
+(
+(D1==mato_grosso,KM2==100);
+(D2==mato_grosso,KM3==100);
+(D2==mato_grosso,KM1==100);
+(D3==mato_grosso,KM4==100);
+(D3==mato_grosso,KM2==100);
+(D4==mato_grosso,KM5==100);
+(D4==mato_grosso,KM3==100);
+(D5==mato_grosso,KM4==100)	
+),
+
+% O caminhão de placa DDD-4444 está ao lado do caminhão que já rodou 100 mil Km.
+
+(
+(KM1==100,P2==ddd_4444);
+(KM2==100,P3==ddd_4444);
+(KM2==100,P1==ddd_4444);
+(KM3==100,P4==ddd_4444);
+(KM3==100,P2==ddd_4444);
+(KM4==100,P5==ddd_4444);
+(KM4==100,P3==ddd_4444);
+(KM5==100,P4==ddd_4444)
+).
+
+main => 
+	
+	time(caminhos((C1,M1,D1,CA1,P1,KM1),
+		 (C2,M2,D2,CA2,P2,KM2),
+		 (C3,M3,D3,CA3,P3,KM3),
+		 (C4,M4,D4,CA4,P4,KM4),
+		 (C5,M5,D5,CA5,P5,KM5))
+	),
+	
+	printf("Caminhão 1:\n"),
+	printf("%w %w %w %w %w %w\n",C1,M1,D1,CA1,P1,KM1),
+	printf("Caminhão 2:\n"),
+	printf("%w %w %w %w %w %w\n",C2,M2,D2,CA2,P2,KM2),
+	printf("Caminhão 3:\n"),
+	printf("%w %w %w %w %w %w\n",C3,M3,D3,CA3,P3,KM3),
+	printf("Caminhão 4:\n"),
+	printf("%w %w %w %w %w %w\n",C4,M4,D4,CA4,P4,KM4),
+	printf("Caminhão 5:\n"),
+	printf("%w %w %w %w %w %w\n",C5,M5,D5,CA5,P5,KM5).
+   
+
+all_different([]) ?=> true.
+	all_different([H|T]) => not(member(H,T)),
+						   all_different(T).
+	
